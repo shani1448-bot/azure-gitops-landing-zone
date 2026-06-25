@@ -97,3 +97,18 @@ output "tfstate_blob_diagnostic_setting_id" {
   description = "Diagnostic setting ID for the Terraform state Storage Account blob service."
   value       = module.diag_tfstate_blob.id
 }
+
+output "tfstate_blob_private_dns_zone_id" {
+  description = "Private DNS zone ID for Storage Blob private endpoints."
+  value       = module.private_dns_blob.id
+}
+
+output "tfstate_blob_private_endpoint_id" {
+  description = "Private Endpoint ID for the Terraform state Storage Account blob service."
+  value       = module.pe_tfstate_blob.id
+}
+
+output "tfstate_blob_private_endpoint_ip" {
+  description = "Private IP address of the Terraform state Storage Account blob private endpoint."
+  value       = module.pe_tfstate_blob.private_ip_address
+}

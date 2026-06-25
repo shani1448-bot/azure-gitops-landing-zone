@@ -172,6 +172,17 @@ module "private_dns_key_vault" {
   tags = local.tags
 }
 
+module "private_dns_blob" {
+  source = "../../modules/private-dns-zone"
+
+  name                      = "privatelink.blob.core.windows.net"
+  resource_group_name       = module.core_rg.name
+  virtual_network_id        = module.hub_vnet.vnet_id
+  virtual_network_link_name = "pdnslink-blob-${local.name_prefix}-hub"
+
+  tags = local.tags
+}
+
 module "pe_key_vault" {
   source = "../../modules/private-endpoint"
 
@@ -186,6 +197,25 @@ module "pe_key_vault" {
 
   private_dns_zone_ids = [
     module.private_dns_key_vault.id
+  ]
+
+  tags = local.tags
+}
+
+module "pe_tfstate_blob" {
+  source = "../../modules/private-endpoint"
+
+  name                = "pe-blob-${local.name_prefix}-tfstate"
+  location            = module.core_rg.location
+  resource_group_name = module.core_rg.name
+
+  subnet_id = module.hub_vnet.subnet_ids["snet-private-endpoints"]
+
+  private_connection_resource_id = module.tfstate_storage.id
+  subresource_names              = ["blob"]
+
+  private_dns_zone_ids = [
+    module.private_dns_blob.id
   ]
 
   tags = local.tags
@@ -231,5 +261,10 @@ module "diag_tfstate_blob" {
   metric_categories = [
     "Transaction"
   ]
+
+  disabled_metric_categories = [
+    "Capacity"
+  ]
 }
+
 

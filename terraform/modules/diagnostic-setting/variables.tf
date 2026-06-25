@@ -24,3 +24,9 @@ variable "metric_categories" {
   type        = list(string)
   default     = []
 }
+
+variable "disabled_metric_categories" {
+  description = "List of metric categories to explicitly disable."
+  type        = list(string)
+  default     = []
+}
