@@ -267,4 +267,21 @@ module "diag_tfstate_blob" {
   ]
 }
 
+module "azure_firewall" {
+  source = "../../modules/azure-firewall"
 
+  name                      = local.azure_firewall_name
+  firewall_policy_name      = local.azure_firewall_policy_name
+  public_ip_name            = local.azure_firewall_pip_name
+  management_public_ip_name = local.azure_firewall_management_pip_name
+
+  resource_group_name = module.core_rg.name
+  location            = var.location
+
+  subnet_id            = module.hub_vnet.subnet_ids["AzureFirewallSubnet"]
+  management_subnet_id = module.hub_vnet.subnet_ids["AzureFirewallManagementSubnet"]
+
+  sku_tier = "Basic"
+
+  tags = local.tags
+}

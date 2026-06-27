@@ -112,3 +112,18 @@ output "tfstate_blob_private_endpoint_ip" {
   description = "Private IP address of the Terraform state Storage Account blob private endpoint."
   value       = module.pe_tfstate_blob.private_ip_address
 }
+
+output "azure_firewall_private_ip" {
+  description = "Azure Firewall private IP address."
+  value       = module.azure_firewall.private_ip_address
+}
+
+output "azure_firewall_public_ip" {
+  description = "Azure Firewall public IP address."
+  value       = module.azure_firewall.public_ip_address
+}
+
+output "azure_firewall_management_public_ip" {
+  description = "Azure Firewall management public IP address."
+  value       = module.azure_firewall.management_public_ip_address
+}
