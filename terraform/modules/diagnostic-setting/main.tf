@@ -11,6 +11,14 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
     }
   }
 
+  dynamic "enabled_log" {
+    for_each = toset(var.log_category_groups)
+
+    content {
+      category_group = enabled_log.value
+    }
+  }
+
   dynamic "metric" {
     for_each = toset(var.metric_categories)
 
@@ -21,30 +29,11 @@ resource "azurerm_monitor_diagnostic_setting" "this" {
   }
 
   dynamic "metric" {
-  for_each = var.metric_categories
+    for_each = toset(var.disabled_metric_categories)
 
-  content {
-    category = metric.value
-    enabled  = true
-
-    retention_policy {
-      enabled = false
-      days    = 0
+    content {
+      category = metric.value
+      enabled  = false
     }
   }
-}
-
-dynamic "metric" {
-  for_each = var.disabled_metric_categories
-
-  content {
-    category = metric.value
-    enabled  = false
-
-    retention_policy {
-      enabled = false
-      days    = 0
-    }
-  }
-}
 }

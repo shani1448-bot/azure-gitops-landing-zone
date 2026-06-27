@@ -30,3 +30,9 @@ variable "disabled_metric_categories" {
   type        = list(string)
   default     = []
 }
+
+variable "log_category_groups" {
+  description = "Log category groups to enable."
+  type        = list(string)
+  default     = []
+}
