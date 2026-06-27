@@ -1,5 +1,7 @@
 data "azurerm_client_config" "current" {} #this lets tf get yout current Azure tanant ID for the key vault
-
+data "azurerm_policy_definition" "key_vault_diagnostics_log_analytics" {
+  name = "6b359d8f-f88d-4052-aa7c-32015963ecc1"
+}
 module "core_rg" {
   source = "../../modules/resource-group"
 
@@ -284,4 +286,41 @@ module "azure_firewall" {
   sku_tier = "Basic"
 
   tags = local.tags
+}
+
+module "policy_key_vault_diagnostics_audit" {
+  source = "../../modules/policy-assignment"
+
+  name            = "audit-kv-diag-log-analytics"
+  display_name    = "Audit Key Vault diagnostics to Log Analytics"
+  description     = "Audits Key Vault resources that do not send diagnostic logs to the central Log Analytics workspace."
+  location        = var.location
+  assign_identity = true
+
+  resource_group_id    = module.core_rg.id
+  policy_definition_id = data.azurerm_policy_definition.key_vault_diagnostics_log_analytics.id
+
+  parameters = {
+    effect = {
+      value = "AuditIfNotExists"
+    }
+
+    categoryGroup = {
+      value = "audit"
+    }
+
+    diagnosticSettingName = {
+      value = "setByPolicy-LogAnalytics"
+    }
+
+    logAnalytics = {
+      value = module.log_analytics.id
+    }
+
+    resourceLocationList = {
+      value = [
+        "*"
+      ]
+    }
+  }
 }
