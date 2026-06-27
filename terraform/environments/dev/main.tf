@@ -154,8 +154,10 @@ module "diag_key_vault" {
   target_resource_id         = module.key_vault.id
   log_analytics_workspace_id = module.log_analytics.id
 
-  log_categories = [
-    "AuditEvent"
+  log_categories = []
+
+  log_category_groups = [
+    "audit"
   ]
 
   metric_categories = [
@@ -310,7 +312,7 @@ module "policy_key_vault_diagnostics_audit" {
     }
 
     diagnosticSettingName = {
-      value = "setByPolicy-LogAnalytics"
+      value = "diag-kv-gitops-lz-dev-core"
     }
 
     logAnalytics = {
