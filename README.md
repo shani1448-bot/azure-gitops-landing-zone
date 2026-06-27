@@ -8,6 +8,8 @@ Built as a DevOps / Cloud Engineering portfolio project.
 
 ## Architecture Overview
 
+For a detailed architecture view, see [docs/architecture.md](docs/architecture.md).
+
 ```
 Developer Laptop
      |
