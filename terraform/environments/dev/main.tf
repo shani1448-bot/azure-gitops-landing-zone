@@ -67,19 +67,25 @@ module "nsg_private_endpoints" {
 module "rt_egress" {
   source = "../../modules/route-table"
 
-  #create one route table 
-  # associate it with snet-runners and snet-shared 
-  # do not create custom routes yet.
+  # Create one egress route table for workloads that should send outbound traffic through Azure Firewall.
+  # For now, associate it only with snet-runners.
+  # Do not associate snet-shared yet because firewall rules currently allow only 10.10.10.0/24.
   name                = "rt-${local.name_prefix}-egress"
   location            = module.core_rg.location
   resource_group_name = module.core_rg.name
 
   subnet_ids = {
     runners = module.hub_vnet.subnet_ids["snet-runners"]
-    shared  = module.hub_vnet.subnet_ids["snet-shared"]
   }
 
-  routes = {}
+  routes = {
+    default_to_azure_firewall = {
+      name                   = "udr-default-to-azure-firewall"
+      address_prefix         = "0.0.0.0/0"
+      next_hop_type          = "VirtualAppliance"
+      next_hop_in_ip_address = module.azure_firewall.private_ip_address
+    }
+  }
 
   tags = local.tags
 }
