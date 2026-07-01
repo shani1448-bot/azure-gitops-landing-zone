@@ -346,3 +346,15 @@ module "policy_key_vault_diagnostics_audit" {
     }
   }
 }
+
+module "firewall_policy_rules" {
+  source = "../../modules/firewall-policy-rules"
+
+  name               = "rcg-${local.name_prefix}-bootstrap-egress"
+  firewall_policy_id = module.azure_firewall.firewall_policy_id
+  priority           = 100
+
+  source_addresses = [
+    "10.10.10.0/24"
+  ]
+}
