@@ -133,6 +133,26 @@ module "diag_nsg_private_endpoints" {
   ]
 }
 
+module "azure_firewall_diagnostics" {
+  source = "../../modules/diagnostic-setting"
+
+  name                       = "diag-afw-${local.name_prefix}-hub"
+  target_resource_id         = module.azure_firewall.id
+  log_analytics_workspace_id = module.log_analytics.id
+
+  log_categories = [
+    "AzureFirewallApplicationRule",
+    "AzureFirewallNetworkRule",
+    "AzureFirewallDnsProxy"
+  ]
+
+  log_category_groups = []
+
+  metric_categories = [
+    "AllMetrics"
+  ]
+}
+
 module "key_vault" {
   source = "../../modules/key-vault"
 
